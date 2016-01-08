@@ -1,18 +1,24 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { fetchSith } from 'pods/sith/actions';
 import IndexComponent from './component';
 
 function mapStateToProps (state) {
-  const { location } = state;
+  const {
+    location,
+    sith
+  } = state;
 
   return {
-    location
+    location,
+    sith
   };
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    fetchSith
   }, dispatch);
 }
 

@@ -5,15 +5,24 @@ import SithList from 'pods/sith/components/List';
 
 export default class Index extends Component {
   static propTypes = {
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    sith: PropTypes.array.isRequired,
+    actions: PropTypes.shape({
+      fetchSith: PropTypes.func.isRequired
+    })
   };
 
   componentWillMount () {
-    console.log('test');
+    const { fetchSith } = this.props.actions;
+
+    fetchSith(3616);
   }
 
   render () {
-    const { location } = this.props;
+    const {
+      location,
+      sith
+    } = this.props;
 
     return (
       <div className={styles.appContainer}>
@@ -21,12 +30,7 @@ export default class Index extends Component {
           <LocationMonitor location={location.name} />
 
           <section className={styles.cssScrollableList}>
-            <SithList entities={[
-              {
-                name: 'Some sith',
-                homeworld: 'Some homeworld'
-              }
-            ]} />
+            <SithList entities={sith} />
 
             <div className={styles.cssScrollButtons}>
               <button className={styles.cssButtonUp}></button>

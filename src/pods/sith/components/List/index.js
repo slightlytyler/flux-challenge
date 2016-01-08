@@ -33,7 +33,7 @@ export default class SithList extends Component {
       <ul className={styles.list}>
         {
           entities.length !== 0
-          ? entities.map(item => renderItem(item.name, item.homeworld))
+          ? entities.map(item => renderItem(item.name, item.homeworld.name))
           : renderEmpty()
         }
       </ul>

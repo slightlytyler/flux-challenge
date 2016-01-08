@@ -1,10 +1,10 @@
 import { actionTypes } from './constants';
-const { FETCH_SITH } = actionTypes;
+const { SET_SITH } = actionTypes;
 
-export default function (state = {}, action) {
+export default function (state = [], action) {
   switch (action.type) {
-    case FETCH_SITH:
-      return action.payload;
+    case SET_SITH:
+      return [action.entity];
   }
 
   return state;
