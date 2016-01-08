@@ -1,12 +1,21 @@
-import { Component } from 'react';
-import styles from '../styles/core.scss'
+import { Component, PropTypes } from 'react';
+import {connect} from 'react-redux';
 
-export default class Index extends Component {
+import styles from '../styles/core.scss';
+import PlanetMonitor from 'components/PlanetMonitor';
+
+class Index extends Component {
+  static propTypes = {
+    location: PropTypes.object.isRequired
+  };
+
   render () {
+    const { location } = this.props;
+
     return (
       <div className={styles.appContainer}>
         <div className={styles.cssRoot}>
-          <h1 className={styles.cssPlanetMonitor}>Obi-Wan currently on Tatooine</h1>
+          <PlanetMonitor planet={location.name} />
 
           <section className={styles.cssScrollableList}>
             <ul className={styles.cssSlots}>
@@ -42,3 +51,11 @@ export default class Index extends Component {
     );
   }
 }
+
+function mapStateToProps (state) {
+  return {
+    location: state.location
+  };
+}
+
+export default connect(mapStateToProps)(Index);

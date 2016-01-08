@@ -1,14 +1,15 @@
-import thunk from 'redux-thunk';
-import rootReducer from './rootReducer';
 import {
   applyMiddleware,
   compose,
   createStore
 } from 'redux';
+import thunk from 'redux-thunk';
+import rootReducer from './rootReducer';
+import obiWanMonitor from './obiWanMonitor';
 
 export default function configureStore (initialState) {
   let createStoreWithMiddleware;
-  const middleware = applyMiddleware(thunk);
+  const middleware = applyMiddleware(thunk, obiWanMonitor);
 
   if (__DEBUG__) {
     createStoreWithMiddleware = compose(
