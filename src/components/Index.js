@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 
 import styles from '../styles/core.scss';
 import PlanetMonitor from 'components/PlanetMonitor';
+import SithList from 'components/SithList';
 
 class Index extends Component {
   static propTypes = {
@@ -18,28 +19,12 @@ class Index extends Component {
           <PlanetMonitor planet={location.name} />
 
           <section className={styles.cssScrollableList}>
-            <ul className={styles.cssSlots}>
-              <li className={styles.cssSlot}>
-                <h3>Jorak Uln</h3>
-                <h6>Homeworld: Korriban</h6>
-              </li>
-              <li className={styles.cssSlot}>
-                <h3>Skere Kaan</h3>
-                <h6>Homeworld: Coruscant</h6>
-              </li>
-              <li className={styles.cssSlot}>
-                <h3>Na'daz</h3>
-                <h6>Homeworld: Ryloth</h6>
-              </li>
-              <li className={styles.cssSlot}>
-                <h3>Kas'im</h3>
-                <h6>Homeworld: Nal Hutta</h6>
-              </li>
-              <li className={styles.cssSlot}>
-                <h3>Darth Bane</h3>
-                <h6>Homeworld: Apatros</h6>
-              </li>
-            </ul>
+            <SithList list={[
+              {
+                name: 'Some sith',
+                homeworld: 'Some homeworld'
+              }
+            ]} />
 
             <div className={styles.cssScrollButtons}>
               <button className={styles.cssButtonUp}></button>
