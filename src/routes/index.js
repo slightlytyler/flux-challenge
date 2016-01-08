@@ -1,9 +1,9 @@
 import { Route, IndexRoute } from 'react-router';
 
-import IndexComponent from 'pods/index/component';
+import IndexContainer from 'pods/index/container';
 
 export default (
   <Route path='/'>
-    <IndexRoute component={IndexComponent} />
+    <IndexRoute component={IndexContainer} />
   </Route>
 );

@@ -30,7 +30,6 @@
     "debug": "^2.2.0",
     "dotenv": "^1.2.0",
     "history": "^1.17.0",
-    "http-request": "^0.7.0",
     "koa": "^1.1.2",
     "koa-connect-history-api-fallback": "^0.3.0",
     "koa-static": "^1.5.2",
@@ -42,6 +41,7 @@
     "redux-actions": "^0.9.0",
     "redux-simple-router": "^1.0.1",
     "redux-thunk": "^1.0.0",
+    "request": "^2.67.0",
     "url": "^0.11.0",
     "yargs": "^3.18.0"
   },

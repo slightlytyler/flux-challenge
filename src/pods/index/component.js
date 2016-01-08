@@ -1,14 +1,16 @@
 import { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
-
 import styles from './styles.scss';
 import LocationMonitor from 'pods/location/components/Monitor';
 import SithList from 'pods/sith/components/List';
 
-class Index extends Component {
+export default class Index extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired
   };
+
+  componentWillMount () {
+    console.log('test');
+  }
 
   render () {
     const { location } = this.props;
@@ -36,11 +38,3 @@ class Index extends Component {
     );
   }
 }
-
-function mapStateToProps (state) {
-  return {
-    location: state.location
-  };
-}
-
-export default connect(mapStateToProps)(Index);
