@@ -1,18 +1,18 @@
 import { Component, PropTypes } from 'react';
 import styles from './styles.scss';
 
-export default class PlanetMonitor extends Component {
+export default class LocationMonitor extends Component {
   static propTypes = {
-    planet: PropTypes.string
+    location: PropTypes.string
   };
 
   render () {
-    const { planet } = this.props;
+    const { location } = this.props;
 
     return (
       <h1 className={styles.base}>
-        { planet
-          ? `Obi-Wan currently on ${planet}`
+        { location
+          ? `Obi-Wan currently on ${location}`
           : `Obi-Wan's location is unknown` }
       </h1>
     );

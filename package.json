@@ -30,6 +30,7 @@
     "debug": "^2.2.0",
     "dotenv": "^1.2.0",
     "history": "^1.17.0",
+    "http-request": "^0.7.0",
     "koa": "^1.1.2",
     "koa-connect-history-api-fallback": "^0.3.0",
     "koa-static": "^1.5.2",

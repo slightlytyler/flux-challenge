@@ -1,9 +1,9 @@
 import { Component, PropTypes } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import styles from '../styles/core.scss';
-import PlanetMonitor from 'components/PlanetMonitor';
-import SithList from 'components/SithList';
+import styles from './styles.scss';
+import LocationMonitor from 'pods/location/components/Monitor';
+import SithList from 'pods/sith/components/List';
 
 class Index extends Component {
   static propTypes = {
@@ -16,10 +16,10 @@ class Index extends Component {
     return (
       <div className={styles.appContainer}>
         <div className={styles.cssRoot}>
-          <PlanetMonitor planet={location.name} />
+          <LocationMonitor location={location.name} />
 
           <section className={styles.cssScrollableList}>
-            <SithList list={[
+            <SithList entities={[
               {
                 name: 'Some sith',
                 homeworld: 'Some homeworld'

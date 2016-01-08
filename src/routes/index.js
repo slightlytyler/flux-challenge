@@ -1,6 +1,6 @@
 import { Route, IndexRoute } from 'react-router';
 
-import IndexComponent from 'components/index';
+import IndexComponent from 'pods/index/component';
 
 export default (
   <Route path='/'>

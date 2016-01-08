@@ -4,8 +4,8 @@ import {
   createStore
 } from 'redux';
 import thunk from 'redux-thunk';
-import rootReducer from './rootReducer';
-import obiWanMonitor from './obiWanMonitor';
+import reducers from 'reducers';
+import obiWanMonitor from 'pods/location/middleware/web-socket';
 
 export default function configureStore (initialState) {
   let createStoreWithMiddleware;
@@ -23,11 +23,11 @@ export default function configureStore (initialState) {
   }
 
   const store = createStoreWithMiddleware(createStore)(
-    rootReducer, initialState
+    reducers, initialState
   );
   if (module.hot) {
-    module.hot.accept('./rootReducer', () => {
-      const nextRootReducer = require('./rootReducer').default;
+    module.hot.accept('../reducers', () => {
+      const nextRootReducer = require('../reducers').default;
 
       store.replaceReducer(nextRootReducer);
     });

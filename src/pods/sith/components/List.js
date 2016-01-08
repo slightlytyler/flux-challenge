@@ -3,7 +3,7 @@ import styles from './styles.scss';
 
 export default class SithList extends Component {
   static propTypes = {
-    list: PropTypes.array
+    entities: PropTypes.array
   };
 
   renderItem (name, homeworld) {
@@ -26,14 +26,14 @@ export default class SithList extends Component {
     );
   }
   render () {
-    const { list } = this.props;
+    const { entities } = this.props;
     const { renderItem, renderEmpty } = this;
 
     return (
       <ul className={styles.list}>
         {
-          list.length !== 0
-          ? list.map(item => renderItem(item.name, item.homeworld))
+          entities.length !== 0
+          ? entities.map(item => renderItem(item.name, item.homeworld))
           : renderEmpty()
         }
       </ul>
