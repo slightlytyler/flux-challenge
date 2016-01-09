@@ -15,7 +15,7 @@ export default class Index extends Component {
   componentWillMount () {
     const { fetchSith } = this.props.actions;
 
-    fetchSith(3616);
+    fetchSith();
   }
 
   render () {

@@ -1,32 +1,81 @@
 import request from 'superagent';
 
-import { actionTypes } from './constants';
-const { FETCH_SITH, SET_SITH } = actionTypes;
+import { actionTypes, firstSith } from './constants';
+const {
+  ADD_SITH,
+  UPDATE_SITH
+} = actionTypes;
 
-export function fetchSith (id) {
-  return (dispatch) => {
-    dispatch({
-      type: FETCH_SITH,
-      id
-    });
+// On initial load we find the first sith using the constant
+// After we recursively find apprentices until we have 5 entities
+// We also have a sister action for finding master
 
-    return findRecord(id).then((response, err) => {
+export function fetchSith () {
+  const id = firstSith;
+
+  return (dispatch, getState) => {
+    dispatch(addSith(id));
+
+    return findRecord(id).then((record, err) => {
       if (err) {
         console.log(`Could not fetch the sith with id ${id}`);
         console.log(err);
 
-        return dispatch({
-          type: SET_SITH,
+        return dispatch(updateSith(id, {
           error: err
-        });
+        }));
       } else {
-        return dispatch({
-          type: SET_SITH,
-          entity: response.body
-        });
+        findApprentice(dispatch, getState, record.apprentice.id);
+
+        return dispatch(updateSith(id, record));
       }
     });
   };
+}
+
+function addSith (id) {
+  return {
+    type: ADD_SITH,
+    id
+  };
+}
+
+function updateSith (id, props) {
+  return {
+    type: UPDATE_SITH,
+    id,
+    props
+  };
+}
+
+// This function is recursive and contiues until
+// We have 5 current visible sith
+function findApprentice (dispatch, getState, id) {
+  const { sith } = getState();
+  const willBreak = sith.length === 4;
+
+  dispatch(addSith(id));
+
+  return findRecord(id).then((record, err) => {
+    if (err) {
+      console.log(`Could not fetch the sith with id ${id}`);
+      console.log(err);
+
+      return dispatch(updateSith(id, {
+        error: err
+      }));
+    } else {
+      if (!willBreak && record.apprentice) {
+        // findApprentice(dispatch, getState, record.apprentice.id);
+      }
+
+      return dispatch(updateSith(id, record));
+    }
+  });
+}
+
+function findMaster () {
+
 }
 
 function findRecord (id) {
@@ -36,7 +85,7 @@ function findRecord (id) {
     request
       .get(url)
       .end((err, response) =>
-        err ? reject(err) : resolve(response)
+        err ? reject(err) : resolve(response.body)
       );
   });
 }

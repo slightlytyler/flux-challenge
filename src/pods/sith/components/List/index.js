@@ -6,10 +6,10 @@ export default class SithList extends Component {
     entities: PropTypes.array
   };
 
-  renderItem (name, homeworld) {
+  renderItem (id, name, homeworld) {
     return (
       <li
-        key={name}
+        key={id}
         className={styles.item}
       >
         <h3>{name}</h3>
@@ -33,7 +33,13 @@ export default class SithList extends Component {
       <ul className={styles.list}>
         {
           entities.length !== 0
-          ? entities.map(item => renderItem(item.name, item.homeworld.name))
+          ? entities.map(item => {
+            const id = item.id;
+            const name = item.name || '';
+            const homeworld = item.homeworld ? item.homeworld.name : '';
+
+            return renderItem(id, name, homeworld);
+          })
           : renderEmpty()
         }
       </ul>
