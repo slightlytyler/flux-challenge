@@ -1,5 +1,5 @@
 import request from 'superagent';
-
+import { last } from 'lodash';
 import {
   actionTypes,
   firstSith,
@@ -9,7 +9,9 @@ import {
 const {
   ADD_APPRENTICE,
   ADD_MASTER,
-  UPDATE_SITH
+  UPDATE_SITH,
+  NAVIGATE_UP,
+  NAVIGATE_DOWN
 } = actionTypes;
 
 // The base action creators
@@ -98,6 +100,34 @@ function addSith (target, dispatch, getState, id) {
       }
     });
   }
+}
+
+export function navigateUp () {
+  return (dispatch, getState) => {
+    const { sith } = getState();
+    const firstSith = sith[0];
+    const master = firstSith.master && firstSith.master.id;
+
+    if (master) {
+      dispatch({ type: NAVIGATE_UP });
+
+      return addSith('master', dispatch, getState, master);
+    }
+  };
+}
+
+export function navigateDown () {
+  return (dispatch, getState) => {
+    const { sith } = getState();
+    const lastSith = last(sith);
+    const apprentice = last(sith).apprentice && last(sith).apprentice.id;
+
+    if (apprentice) {
+      dispatch({ type: NAVIGATE_DOWN });
+
+      return addSith('apprentice', dispatch, getState, apprentice);
+    }
+  };
 }
 
 function findRecord (id) {

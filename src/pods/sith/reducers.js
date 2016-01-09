@@ -1,8 +1,12 @@
+import { drop, dropRight } from 'lodash';
+
 import { actionTypes } from './constants';
 const {
   ADD_APPRENTICE,
   ADD_MASTER,
-  UPDATE_SITH
+  UPDATE_SITH,
+  NAVIGATE_UP,
+  NAVIGATE_DOWN
 } = actionTypes;
 
 export default function (state = [], action) {
@@ -19,6 +23,12 @@ export default function (state = [], action) {
         ? Object.assign({}, entity, action.props)
         : entity
       );
+
+    case NAVIGATE_UP:
+      return dropRight(state, 2);
+
+    case NAVIGATE_DOWN:
+      return drop(state, 2);
   }
 
   return state;

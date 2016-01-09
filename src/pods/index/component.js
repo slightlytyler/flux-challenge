@@ -8,7 +8,9 @@ export default class Index extends Component {
     location: PropTypes.object.isRequired,
     sith: PropTypes.array.isRequired,
     actions: PropTypes.shape({
-      fetchSith: PropTypes.func.isRequired
+      fetchSith: PropTypes.func.isRequired,
+      navigateUp: PropTypes.func.isRequired,
+      navigateDown: PropTypes.func.isRequired
     })
   };
 
@@ -21,8 +23,13 @@ export default class Index extends Component {
   render () {
     const {
       location,
-      sith
+      sith,
+      actions
     } = this.props;
+    const {
+      navigateUp,
+      navigateDown
+    } = actions;
 
     return (
       <div className={styles.appContainer}>
@@ -33,8 +40,14 @@ export default class Index extends Component {
             <SithList entities={sith} />
 
             <div className={styles.cssScrollButtons}>
-              <button className={styles.cssButtonUp}></button>
-              <button className={styles.cssButtonDown}></button>
+              <button
+                onClick={() => navigateUp()}
+                className={styles.cssButtonUp}
+              />
+              <button
+                onClick={() => navigateDown()}
+                className={styles.cssButtonDown}
+              />
             </div>
           </section>
         </div>

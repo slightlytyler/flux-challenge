@@ -1,7 +1,11 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { fetchSith } from 'pods/sith/actions';
+import {
+  fetchSith,
+  navigateUp,
+  navigateDown
+} from 'pods/sith/actions';
 import IndexComponent from './component';
 
 function mapStateToProps (state) {
@@ -18,7 +22,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchSith
+    fetchSith,
+    navigateUp,
+    navigateDown
   }, dispatch);
 }
 
