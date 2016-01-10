@@ -120,7 +120,7 @@ export function navigateDown () {
   return (dispatch, getState) => {
     const { sith } = getState();
     const lastSith = last(sith);
-    const apprentice = last(sith).apprentice && last(sith).apprentice.id;
+    const apprentice = lastSith.apprentice && lastSith.apprentice.id;
 
     if (apprentice) {
       dispatch({ type: NAVIGATE_DOWN });
