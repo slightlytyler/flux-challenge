@@ -12,17 +12,13 @@ const {
 export default function (state = [], action) {
   switch (action.type) {
     case ADD_APPRENTICE:
-      return [...state, { id: action.id }];
+      return [...state, action.props];
 
     case ADD_MASTER:
-      return [{ id: action.id }, ...state];
+      return [action.props, ...state];
 
     case UPDATE_SITH:
-      return state.map(entity =>
-        entity.id === action.id
-        ? Object.assign({}, entity, action.props)
-        : entity
-      );
+      return updateSith(state, action.id, action.props);
 
     case NAVIGATE_UP:
       return dropRight(state, 2);
@@ -32,4 +28,12 @@ export default function (state = [], action) {
   }
 
   return state;
+}
+
+function updateSith(state, id, props) {
+  return state.map(entity =>
+    entity.id === id
+    ? Object.assign({}, entity, props)
+    : entity
+  );
 }

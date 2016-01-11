@@ -34,7 +34,7 @@ export default class SithList extends Component {
         {
           entities.length !== 0
           ? entities.map(item => {
-            const id = item.id;
+            const id = item.ref;
             const name = item.name || '';
             const homeworld = item.homeworld ? item.homeworld.name : '';
 

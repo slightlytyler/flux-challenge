@@ -12,16 +12,16 @@ export default class Index extends Component {
     location: PropTypes.object.isRequired,
     sith: PropTypes.array.isRequired,
     actions: PropTypes.shape({
-      fetchSith: PropTypes.func.isRequired,
+      fetchSithList: PropTypes.func.isRequired,
       navigateUp: PropTypes.func.isRequired,
       navigateDown: PropTypes.func.isRequired
     })
   };
 
   componentWillMount () {
-    const { fetchSith } = this.props.actions;
+    const { fetchSithList } = this.props.actions;
 
-    fetchSith();
+    fetchSithList();
   }
 
   render () {

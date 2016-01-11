@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import {
-  fetchSith,
+  fetchSithList,
   navigateUp,
   navigateDown
 } from 'pods/sith/actions';
@@ -22,7 +22,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchSith,
+    fetchSithList,
     navigateUp,
     navigateDown
   }, dispatch);
