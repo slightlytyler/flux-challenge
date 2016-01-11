@@ -4,12 +4,17 @@ import {
   createStore
 } from 'redux';
 import thunk from 'redux-thunk';
+import { createRequestMiddleware } from 'redux-requests';
 import reducers from 'reducers';
 import obiWanMonitor from 'pods/location/middleware/web-socket';
 
 export default function configureStore (initialState) {
   let createStoreWithMiddleware;
-  const middleware = applyMiddleware(thunk, obiWanMonitor);
+  const middleware = applyMiddleware(
+    thunk,
+    createRequestMiddleware(),
+    obiWanMonitor
+  );
 
   if (__DEBUG__) {
     createStoreWithMiddleware = compose(

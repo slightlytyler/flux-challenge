@@ -1,4 +1,5 @@
 import request from 'superagent';
+import { attemptRequest } from 'redux-requests';
 import { last } from 'lodash';
 import {
   actionTypes,
@@ -40,21 +41,14 @@ function updateSith (id, props) {
 // The initial action creator
 // Fetches the first sith and then begins fetching master and apprentices
 export function fetchSith () {
-  const id = firstSith;
-
   return (dispatch, getState) => {
-    dispatch(addMaster(id));
+    const id = firstSith;
+    const url = `http://localhost:3000/dark-jedis/${id}`;
 
-    return findRecord(id).then((record, err) => {
-      if (err) {
-        console.log(`Could not fetch the sith with id ${id}`);
-        console.log(err);
-
-        return dispatch(updateSith(id, {
-          error: err
-        }));
-      } else {
-        const { master, apprentice } = record;
+    attemptRequest(url, {
+      begin: () => addMaster(id),
+      success: response => {
+        const { master, apprentice } = response;
 
         if (master.id) {
           addSith('master', dispatch, getState, master.id);
@@ -64,9 +58,18 @@ export function fetchSith () {
           addSith('apprentice', dispatch, getState, apprentice.id);
         }
 
-        return dispatch(updateSith(id, record));
+        return updateSith(id, response);
+      },
+      failure: error => {
+        console.log(`Could not fetch the sith with id ${id}`);
+        console.log(error);
+
+        return updateSith(id, {
+          error
+        });
       }
-    });
+    }, () => findRecord(url)
+    , dispatch);
   };
 }
 
@@ -77,28 +80,30 @@ function addSith (target, dispatch, getState, id) {
   const cancel = sith.length === maxSith;
 
   if (!cancel) {
+    const url = `http://localhost:3000/dark-jedis/${id}`;
     const action = target === 'master' ? addMaster : addApprentice;
 
-    dispatch(action(id));
+    attemptRequest(url, {
+      begin: () => action(id),
+      success: response => {
+        const targetRecord = response[target];
 
-    return findRecord(id).then((record, err) => {
-      if (err) {
-        console.log(`Could not fetch the sith with id ${id}`);
-        console.log(err);
-
-        return dispatch(updateSith(id, {
-          error: err
-        }));
-      } else {
-        const targetId = record[target].id;
-
-        if (targetId) {
-          addSith(target, dispatch, getState, targetId);
+        if (targetRecord.id) {
+          addSith(target, dispatch, getState, targetRecord.id);
         }
 
-        return dispatch(updateSith(id, record));
+        return updateSith(id, response);
+      },
+      failure: error => {
+        console.log(`Could not fetch the sith with id ${id}`);
+        console.log(error);
+
+        return updateSith(id, {
+          error
+        });
       }
-    });
+    }, () => findRecord(url)
+    , dispatch);
   }
 }
 
@@ -130,9 +135,7 @@ export function navigateDown () {
   };
 }
 
-function findRecord (id) {
-  const url = `http://localhost:3000/dark-jedis/${id}`;
-
+function findRecord (url) {
   return new Promise((resolve, reject) => {
     request
       .get(url)
