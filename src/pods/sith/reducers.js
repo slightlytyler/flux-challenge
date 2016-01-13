@@ -18,7 +18,7 @@ export default function (state = [], action) {
       return [action.props, ...state];
 
     case UPDATE_SITH:
-      return updateSith(state, action.id, action.props);
+      return updateSith(state, action.ref, action.props);
 
     case NAVIGATE_UP:
       return dropRight(state, 2);
@@ -30,9 +30,9 @@ export default function (state = [], action) {
   return state;
 }
 
-function updateSith(state, id, props) {
+function updateSith (state, ref, props) {
   return state.map(entity =>
-    entity.id === id
+    entity.ref === ref
     ? Object.assign({}, entity, props)
     : entity
   );
