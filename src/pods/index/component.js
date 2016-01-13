@@ -45,7 +45,10 @@ export default class Index extends Component {
           <LocationMonitor location={location.name} />
 
           <section className={styles.cssScrollableList}>
-            <SithList entities={sith} />
+            <SithList
+              entities={sith}
+              currentLocation={location.name}
+            />
 
             <div className={styles.cssScrollButtons}>
               <button

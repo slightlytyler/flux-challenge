@@ -15,11 +15,10 @@ export default function (store) {
     const unloadedSith = sith.filter(entity => entity.id && !(entity.loading || entity.loaded));
 
     // First need to cancel all requests for sith not in the current state
-    const currentSithRefs = sith.map(entity => entity.ref)
+    const currentSithRefs = sith.map(entity => entity.ref);
     const currentLoadingSithRefs = Object.keys(requests);
     const unneededRequestRefs = difference(currentLoadingSithRefs, currentSithRefs);
-    console.log(currentLoadingSithRefs);
-    console.log(currentSithRefs);
+    console.log(requests);
     unneededRequestRefs.forEach(ref => {
       requests[ref].abort();
       delete requests[ref];
@@ -38,7 +37,7 @@ export default function (store) {
         .get(url)
         .end((error, response) => {
           if (response) {
-            delete requests[entity.id];
+            delete requests[entity.ref];
 
             dispatch(
               updateSith(
@@ -78,17 +77,4 @@ export default function (store) {
       ;
     });
   };
-}
-
-function findRecord (id) {
-  const url = `http://localhost:3000/dark-jedis/${id}`;
-
-  return new Promise((resolve, reject) => {
-    request
-      .get(url)
-      .end((err, response) =>
-        err ? reject(err) : resolve(response.body)
-      )
-    ;
-  });
 }
