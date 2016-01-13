@@ -6,6 +6,6 @@ export const actionTypes = {
   NAVIGATE_DOWN: 'NAVIGATE_DOWN'
 };
 
-export const firstSith = 3616;
+export const initialSith = 3616;
 
 export const maxSith = 5;

@@ -1,13 +1,14 @@
 import request from 'superagent';
 import {
   findIndex,
-  findLastIndex
+  findLastIndex,
+  last
 } from 'lodash';
 import shortid from 'shortid';
 
 import {
   actionTypes,
-  firstSith,
+  initialSith,
   maxSith
 } from './constants';
 
@@ -100,12 +101,12 @@ function fetchSith (id, dispatch, getState) {
 
       const { master, apprentice } = response;
 
-      if (master && master.id) {
+      if (master && master.id && !sith.some(entity => entity.id === master.id )) {
         // Update next blank master element
         dispatch(replaceSith(master.id, 'master'));
       }
 
-      if (apprentice && apprentice.id) {
+      if (apprentice && apprentice.id && !sith.some(entity => entity.id === apprentice.id )) {
         // Update next blank apprentice element
         dispatch(replaceSith(apprentice.id, 'apprentice'));
       }
@@ -116,7 +117,7 @@ function fetchSith (id, dispatch, getState) {
 export function fetchSithList () {
   return (dispatch, getState) => {
     const initialList = [
-      createSith(firstSith, 'master'),
+      createSith(initialSith, 'master'),
       createSith(undefined, 'apprentice'),
       createSith(undefined, 'apprentice'),
       createSith(undefined, 'master'),
@@ -129,29 +130,37 @@ export function fetchSithList () {
 
 export function navigateUp () {
   return (dispatch, getState) => {
-   // const { sith } = getState();
-   // const firstSith = sith[0];
-   // const master = firstSith.master && firstSith.master.id;
+    const { sith } = getState();
+    const master = sith[0].master;
 
-   // if (master) {
-   //   dispatch({ type: NAVIGATE_UP });
-   //   addSith('master', dispatch, getState, master);
-   //   return addSith('master', dispatch, getState);
-   // }
+    if (master && master.id) {
+       // Remove last two sith
+      dispatch({ type: NAVIGATE_UP });
+
+      // Add a master using the master.id from the first sith
+      dispatch(createSith(master.id, 'master'));
+
+      // Add a placeholder master
+      dispatch(createSith(undefined, 'master'));
+    }
   };
 }
 
 export function navigateDown () {
   return (dispatch, getState) => {
-   // const { sith } = getState();
-   // const lastSith = last(sith);
-   // const apprentice = lastSith.apprentice && lastSith.apprentice.id;
+    const { sith } = getState();
+    const apprentice = last(sith).apprentice;
 
-   // if (apprentice) {
-   //   dispatch({ type: NAVIGATE_DOWN });
+    if (apprentice && apprentice.id) {
+      // Remove last two sith
+      dispatch({ type: NAVIGATE_DOWN });
 
-   //   return addSith('apprentice', dispatch, getState, apprentice);
-   // }
+      // Add an apprentive using the apprentice.id from the last sith
+      dispatch(createSith(apprentice.id, 'apprentice'));
+
+      // Add a placeholder apprentice
+      dispatch(createSith(undefined, 'apprentice'));
+    }
   };
 }
 
