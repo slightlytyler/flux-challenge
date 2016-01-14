@@ -1,5 +1,5 @@
 import request from 'superagent';
-import { difference } from 'lodash';
+import { difference, forEach } from 'lodash';
 
 import {
   updateSith,
@@ -11,70 +11,92 @@ export default function (store) {
 
   return () => {
     const { dispatch } = store;
-    const { sith } = store.getState();
-    const unloadedSith = sith.filter(entity => entity.id && !(entity.loading || entity.loaded));
+    const { sith, location } = store.getState();
+    const currentSithHomeworlds = sith.map(entity => entity.homeworld && entity.homeworld.name);
+    const anySithBornInCurrentLocation = location && currentSithHomeworlds.indexOf(location.name) !== -1;
 
-    // First need to cancel all requests for sith not in the current state
-    const currentSithRefs = sith.map(entity => entity.ref);
-    const currentLoadingSithRefs = Object.keys(requests);
-    const unneededRequestRefs = difference(currentLoadingSithRefs, currentSithRefs);
-    console.log(requests);
-    unneededRequestRefs.forEach(ref => {
-      requests[ref].abort();
-      delete requests[ref];
-    });
+    if (anySithBornInCurrentLocation) {
+      forEach(requests, (request, ref) => {
+        request.abort();
+        delete requests[ref];
 
-    unloadedSith.forEach(entity => {
-      dispatch(updateSith(entity.ref, {
-        loading: true,
-        loaded: false,
-        error: false
-      }));
+        dispatch(updateSith(ref, {
+          loading: false,
+          loaded: false,
+          error: false
+        }));
+      });
+    } else {
+      const unloadedSith = sith.filter(entity => entity.id && !(entity.loading || entity.loaded));
 
-      let url = `http://localhost:3000/dark-jedis/${entity.id}`;
+      // First need to cancel all requests for sith not in the current state
+      const currentSithRefs = sith.map(entity => entity.ref);
+      const currentLoadingSithRefs = Object.keys(requests);
+      const unneededRequestRefs = difference(currentLoadingSithRefs, currentSithRefs);
 
-      requests[entity.ref] = request
-        .get(url)
-        .end((error, response) => {
-          if (response) {
-            delete requests[entity.ref];
+      unneededRequestRefs.forEach(ref => {
+        requests[ref].abort();
+        delete requests[ref];
 
-            dispatch(
-              updateSith(
-                entity.ref,
-                Object.assign({}, response.body, {
-                  loading: false,
-                  loaded: true,
-                  error: false
-                })
-              )
-            );
+        dispatch(updateSith(ref, {
+          loading: false,
+          loaded: false,
+          error: false
+        }));
+      });
 
-            const { master, apprentice } = response.body;
+      unloadedSith.forEach(entity => {
+        dispatch(updateSith(entity.ref, {
+          loading: true,
+          loaded: false,
+          error: false
+        }));
 
-            if (master && master.id && !sith.some(entity => entity.id === master.id)) {
-              dispatch(replaceSith(master.id, 'master'));
+        let url = `http://localhost:3000/dark-jedis/${entity.id}`;
+
+        requests[entity.ref] = request
+          .get(url)
+          .end((error, response) => {
+            if (response) {
+              delete requests[entity.ref];
+
+              dispatch(
+                updateSith(
+                  entity.ref,
+                  Object.assign({}, response.body, {
+                    loading: false,
+                    loaded: true,
+                    error: false
+                  })
+                )
+              );
+
+              const { master, apprentice } = response.body;
+
+              if (master && master.id && !sith.some(entity => entity.id === master.id)) {
+                dispatch(replaceSith(master.id, 'master'));
+              }
+
+              if (apprentice && apprentice.id && !sith.some(entity => entity.id === apprentice.id)) {
+                dispatch(replaceSith(apprentice.id, 'apprentice'));
+              }
+            } else if (error) {
+              console.log(error);
+
+              dispatch(
+                updateSith(
+                  entity.ref,
+                  {
+                    loading: false,
+                    loaded: false,
+                    error
+                  }
+                )
+              );
             }
-
-            if (apprentice && apprentice.id && !sith.some(entity => entity.id === apprentice.id)) {
-              dispatch(replaceSith(apprentice.id, 'apprentice'));
-            }
-          } else if (error) {
-            console.log(error);
-
-            dispatch(
-              updateSith(
-                entity.ref,
-                {
-                  loading: false,
-                  loaded: false,
-                  error
-                }
-              )
-            );
-          }
-        })
-      ;
-    });
+          })
+        ;
+      });
+    }
   };
 }
