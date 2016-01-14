@@ -1,23 +1,27 @@
 import request from 'superagent';
-import { difference, forEach } from 'lodash';
+import { difference, forEach, size } from 'lodash';
 
 import {
   updateSith,
   replaceSith
 } from './actions';
+import {
+  anySithBornInCurrentLocation,
+  unloadedSith,
+  sithRefs
+} from './selectors';
 
 export default function (store) {
   const requests = {};
 
   return () => {
     const { dispatch } = store;
-    const { sith, location } = store.getState();
-    const currentSithHomeworlds = sith.map(entity => entity.homeworld && entity.homeworld.name);
-    const anySithBornInCurrentLocation = location && currentSithHomeworlds.indexOf(location.name) !== -1;
+    const state = store.getState();
+    const { sith } = state;
 
-    if (anySithBornInCurrentLocation) {
-      forEach(requests, (request, ref) => {
-        request.abort();
+    if (size(requests) > 0 && anySithBornInCurrentLocation(state)) {
+      forEach(requests, (value, ref) => {
+        value.abort();
         delete requests[ref];
 
         dispatch(updateSith(ref, {
@@ -27,12 +31,8 @@ export default function (store) {
         }));
       });
     } else {
-      const unloadedSith = sith.filter(entity => entity.id && !(entity.loading || entity.loaded));
-
       // First need to cancel all requests for sith not in the current state
-      const currentSithRefs = sith.map(entity => entity.ref);
-      const currentLoadingSithRefs = Object.keys(requests);
-      const unneededRequestRefs = difference(currentLoadingSithRefs, currentSithRefs);
+      const unneededRequestRefs = difference(Object.keys(requests), sithRefs(state));
 
       unneededRequestRefs.forEach(ref => {
         requests[ref].abort();
@@ -45,7 +45,7 @@ export default function (store) {
         }));
       });
 
-      unloadedSith.forEach(entity => {
+      unloadedSith(state).forEach(entity => {
         dispatch(updateSith(entity.ref, {
           loading: true,
           loaded: false,
